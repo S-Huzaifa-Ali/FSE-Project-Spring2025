@@ -18,7 +18,7 @@
 - **Backend:** Django REST Framework  
 - **Frontend:** Django Templates + Tailwind CSS (with minimal custom CSS)  
 - **NLP Library:** spaCy  
-- **AI Integration:** OpenAI API *(temporarily disabled due to billing issues)*  
+- **AI Integration:** OpenAI API
 - **Database:** SQLite  
 
 ---
