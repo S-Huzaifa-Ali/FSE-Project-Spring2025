@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Resume Analysis | Resume Parser{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'recruiter_dashboard' %}" class="text-blue-600 hover:underline flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Dashboard
+    </a>
+</div>
+
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <div class="flex justify-between items-start mb-6">
+        <div>
+            <h1 class="text-2xl font-bold mb-2">Resume Analysis</h1>
+            <p class="text-gray-600">Detailed analysis for {{ application.candidate.name }}'s application</p>
+        </div>
+        
+        {% if analysis.rating %}
+        <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg flex items-center">
+            <span class="font-bold mr-2">Match Score:</span>
+            <div class="flex items-center">
+                {% for i in "12345"|make_list %}
+                    {% if forloop.counter <= analysis.rating %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                    {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+            <h2 class="text-xl font-semibold mb-4">Candidate Information</h2>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p><span class="font-medium">Name:</span> {{ application.candidate.name }}</p>
+                <p><span class="font-medium">Email:</span> {{ application.candidate.user.email }}</p>
+                {% if application.candidate.age %}
+                    <p><span class="font-medium">Age:</span> {{ application.candidate.age }}</p>
+                {% endif %}
+                {% if application.candidate.qualification %}
+                    <p><span class="font-medium">Qualification:</span> {{ application.candidate.qualification }}</p>
+                {% endif %}
+                <p><span class="font-medium">Applied On:</span> {{ application.applied_at|date:"M d, Y" }}</p>
+            </div>
+        </div>
+        
+        <div>
+            <h2 class="text-xl font-semibold mb-4">Job Information</h2>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-semibold text-lg">{{ application.job.designation }}</h3>
+                <p class="text-gray-600 mb-2">{{ application.job.company_name }}</p>
+                <p class="text-sm text-gray-500 mb-4">Posted: {{ application.job.created_at|date:"M d, Y" }}</p>
+                
+                {% if application.job.required_skills %}
+                    <h4 class="font-medium mb-2">Required Skills:</h4>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% for skill in application.job.required_skills %}
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">
+                                {{ skill }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="mb-6">
+        <h2 class="text-xl font-semibold mb-4">Resume Analysis</h2>
+        
+        {% if analysis.skills %}
+            <div class="mb-6">
+                <h3 class="font-medium mb-2">Skills Extracted:</h3>
+                <div class="flex flex-wrap gap-2">
+                    {% for skill in analysis.skills %}
+                        <span class="{% if skill in application.job.required_skills %}bg-green-100 text-green-800{% else %}bg-blue-100 text-blue-800{% endif %} px-2 py-1 rounded-full text-sm">
+                            {{ skill }}
+                            {% if skill in application.job.required_skills %}
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            {% endif %}
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if analysis.experience %}
+            <div class="mb-6">
+                <h3 class="font-medium mb-2">Experience:</h3>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="text-gray-700 whitespace-pre-line">{{ analysis.experience }}</div>
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if analysis.education %}
+            <div class="mb-6">
+                <h3 class="font-medium mb-2">Education:</h3>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="text-gray-700 whitespace-pre-line">{{ analysis.education }}</div>
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if analysis.summary %}
+            <div class="mb-6">
+                <h3 class="font-medium mb-2">Summary:</h3>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="text-gray-700 whitespace-pre-line">{{ analysis.summary }}</div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    {% if analysis.ai_feedback %}
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-4">AI Feedback</h2>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="text-gray-700 whitespace-pre-line">{{ analysis.ai_feedback }}</div>
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="flex justify-end">
+        <a href="{% url 'recruiter_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

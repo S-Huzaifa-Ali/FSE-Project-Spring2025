@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Resume Parser | Resume Parser{% endblock %}
+
+{% block content %}
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <h1 class="text-2xl font-bold mb-4">Resume Parser</h1>
+    <p class="text-gray-600 mb-6">Parse and analyze candidate resumes using AI. Filter by keywords to find the most relevant candidates.</p>
+    
+    <form method="post" class="mb-6">
+        {% csrf_token %}
+        <div class="flex flex-col md:flex-row gap-2">
+            <input type="text" name="keyword" placeholder="Filter by keyword (e.g. Python, JavaScript, Machine Learning)" 
+                   class="border rounded-md px-4 py-2 flex-grow" value="{{ keyword }}">
+            <button type="submit" class="btn btn-primary">Parse Resumes</button>
+        </div>
+    </form>
+</div>
+
+<!-- Always show candidate list -->
+{% if candidate_list %}
+    <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+        <h2 class="text-xl font-bold mb-4">Available Candidates</h2>
+        <p class="text-gray-600 mb-4">{{ candidate_list|length }} candidates found with resumes.</p>
+        
+        <div class="space-y-6">
+            {% for candidate in candidate_list %}
+                <div class="border-b pb-6 last:border-b-0 last:pb-0">
+                    <h3 class="text-lg font-semibold mb-2">{{ candidate.name }}</h3>
+                    <p class="text-gray-600 mb-2">Applied for: {{ candidate.job_title }}</p>
+                    
+                    {% if candidate.email %}
+                        <p class="text-gray-600 mb-2">
+                            <span class="font-medium">Email:</span> {{ candidate.email }}
+                        </p>
+                    {% endif %}
+                    
+                    {% if candidate.applied_at %}
+                        <p class="text-gray-600 mb-2">
+                            <span class="font-medium">Applied on:</span> {{ candidate.applied_at|date:"F d, Y" }}
+                        </p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<!-- Show detailed parsing results only after search -->
+{% if search_performed %}
+    {% if parsed_resumes %}
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-4">Parsing Results</h2>
+            <p class="text-gray-600 mb-4">Found {{ parsed_resumes|length }} matching resumes{% if keyword %} for keyword "{{ keyword }}"{% endif %}.</p>
+            
+            <div class="space-y-6">
+                {% for resume in parsed_resumes %}
+                    <div class="border-b pb-6 last:border-b-0 last:pb-0">
+                        <h3 class="text-lg font-semibold mb-2">{{ resume.name }}</h3>
+                        <p class="text-gray-600 mb-2">Applied for: {{ resume.job_title }}</p>
+                        
+                        {% if resume.email %}
+                            <p class="text-gray-600 mb-2">
+                                <span class="font-medium">Email:</span> {{ resume.email }}
+                            </p>
+                        {% endif %}
+                        
+                        {% if resume.phone %}
+                            <p class="text-gray-600 mb-2">
+                                <span class="font-medium">Phone:</span> {{ resume.phone }}
+                            </p>
+                        {% endif %}
+                        
+                        {% if resume.skills %}
+                            <div class="mb-4">
+                                <h4 class="font-medium mb-2">Skills:</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    {% for skill in resume.skills %}
+                                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">
+                                            {{ skill }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="bg-white shadow-md rounded-lg p-6 text-center">
+            <p class="text-gray-600 mb-4">No matching results found for keyword "{{ keyword }}". Try adjusting your search criteria.</p>
+        </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

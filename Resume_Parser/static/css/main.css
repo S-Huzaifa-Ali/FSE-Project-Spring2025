@@ -1,0 +1,188 @@
+:root {
+    --navy: #1a2a3a;
+    --orange: #ff6b35;
+    --light-gray: #f5f5f5;
+    --dark-gray: #333333;
+    --white: #ffffff;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--dark-gray);
+}
+
+.bg-navy {
+    background-color: var(--navy);
+}
+
+.text-navy {
+    color: var(--navy);
+}
+
+.bg-orange {
+    background-color: var(--orange);
+}
+
+.text-orange {
+    color: var(--orange);
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--orange);
+    color: var(--white);
+    border: 1px solid var(--orange);
+}
+
+.btn-primary:hover {
+    background-color: transparent;
+    color: var(--orange);
+}
+
+.btn-secondary {
+    background-color: var(--navy);
+    color: var(--white);
+    border: 1px solid var(--navy);
+}
+
+.btn-secondary:hover {
+    background-color: transparent;
+    color: var(--navy);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--dark-gray);
+    background-color: var(--white);
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: var(--orange);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+}
+
+.card {
+    background-color: var(--white);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    padding: 1rem;
+    background-color: var(--navy);
+    color: var(--white);
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.dashboard-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-card .card-body {
+    flex: 1;
+}
+
+.resume-results {
+    background-color: var(--light-gray);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.skill-tag {
+    display: inline-block;
+    background-color: var(--navy);
+    color: var(--white);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.job-listing {
+    border-left: 4px solid var(--orange);
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.profile-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100vh;
+    background-color: var(--white);
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+.profile-sidebar.active {
+    transform: translateX(0);
+}
+
+.close-sidebar {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--dark-gray);
+}
+
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-sidebar {
+        width: 100%;
+    }
+}

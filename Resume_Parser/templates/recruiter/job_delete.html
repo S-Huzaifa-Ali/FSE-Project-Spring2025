@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Job | Resume Parser{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'job_management' %}" class="text-blue-600 hover:underline flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Job Management
+    </a>
+</div>
+
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <h1 class="text-2xl font-bold mb-6 text-red-600">Delete Job</h1>
+    
+    <div class="bg-red-50 p-4 rounded-lg mb-6">
+        <div class="flex items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+                <h3 class="text-lg font-medium text-red-800">Warning: This action cannot be undone</h3>
+                <p class="text-red-700 mt-2">You are about to delete the job "{{ job.designation }}" at "{{ job.company_name }}". This will also delete all applications associated with this job.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-gray-50 p-4 rounded-lg mb-6">
+        <h2 class="font-semibold text-lg mb-2">Job Details</h2>
+        <p><span class="font-medium">Title:</span> {{ job.designation }}</p>
+        <p><span class="font-medium">Company:</span> {{ job.company_name }}</p>
+        <p><span class="font-medium">Posted:</span> {{ job.created_at|date:"M d, Y" }}</p>
+        <p><span class="font-medium">Applications:</span> {{ job.applications.count }}</p>
+    </div>
+    
+    <form method="post" class="mt-6">
+        {% csrf_token %}
+        <div class="flex justify-end">
+            <a href="{% url 'job_management' %}" class="btn btn-secondary mr-2">Cancel</a>
+            <button type="submit" class="btn bg-red-600 hover:bg-red-700 text-white">Delete Job</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

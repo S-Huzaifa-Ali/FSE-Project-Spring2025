@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ job.designation }} | Resume Parser{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'job_list' %}" class="text-blue-600 hover:underline flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Jobs
+    </a>
+</div>
+
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <div class="flex flex-col md:flex-row justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold mb-2">{{ job.designation }}</h1>
+            <p class="text-gray-600 mb-1">{{ job.company_name }}</p>
+            <p class="text-sm text-gray-500">Posted: {{ job.created_at|date:"M d, Y" }}</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            {% if already_applied %}
+                <div class="bg-green-100 text-green-800 px-4 py-2 rounded-md flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span>You have already applied</span>
+                </div>
+            {% else %}
+                <button id="applyBtn" class="btn btn-primary">Apply Now</button>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="mb-6">
+        <h2 class="text-xl font-semibold mb-2">Job Description</h2>
+        <p class="text-gray-700 whitespace-pre-line">{{ job.description }}</p>
+    </div>
+    
+    {% if job.required_skills %}
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-2">Required Skills</h2>
+            <div class="flex flex-wrap gap-2">
+                {% for skill in job.required_skills %}
+                    <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% if job.experience_requirements %}
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Experience Requirements</h2>
+                <p class="text-gray-700">{{ job.experience_requirements }}</p>
+            </div>
+        {% endif %}
+        
+        {% if job.education_requirements %}
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Education Requirements</h2>
+                <p class="text-gray-700">{{ job.education_requirements }}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Application Modal -->
+{% if not already_applied %}
+<div id="applicationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Apply for {{ job.designation }}</h2>
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label for="resume" class="block text-sm font-medium text-gray-700 mb-1">Upload Resume</label>
+                <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required
+                       class="w-full border border-gray-300 rounded-md px-3 py-2">
+                <p class="text-sm text-gray-500 mt-1">Accepted formats: PDF, DOC, DOCX</p>
+            </div>
+            
+            <div class="flex justify-end">
+                <button type="button" id="cancelBtn" class="btn btn-secondary mr-2">Cancel</button>
+                <button type="submit" class="btn btn-primary">Submit Application</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const applyBtn = document.getElementById('applyBtn');
+        const applicationModal = document.getElementById('applicationModal');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        
+        if (applyBtn) {
+            applyBtn.addEventListener('click', function() {
+                applicationModal.classList.remove('hidden');
+            });
+        }
+        
+        if (closeModal) {
+            closeModal.addEventListener('click', function() {
+                applicationModal.classList.add('hidden');
+            });
+        }
+        
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function() {
+                applicationModal.classList.add('hidden');
+            });
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

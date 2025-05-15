@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Recruiter Dashboard | Resume Parser{% endblock %}
+
+{% block content %}
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <h1 class="text-2xl font-bold mb-4">Welcome, {{ recruiter.company_name }}</h1>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-blue-50 p-4 rounded-lg shadow-sm">
+            <h3 class="text-lg font-semibold mb-2">Jobs Posted</h3>
+            <p class="text-3xl font-bold text-blue-600">{{ total_jobs }}</p>
+            <p class="text-sm text-gray-600">Active job listings</p>
+            <a href="{% url 'job_management' %}" class="mt-2 inline-block text-sm text-blue-600 hover:underline">Manage jobs</a>
+        </div>
+        <div class="bg-green-50 p-4 rounded-lg shadow-sm">
+            <h3 class="text-lg font-semibold mb-2">Applications</h3>
+            <p class="text-3xl font-bold text-green-600">{{ total_applications }}</p>
+            <p class="text-sm text-gray-600">Total applications received</p>
+        </div>
+        <div class="bg-purple-50 p-4 rounded-lg shadow-sm">
+            <h3 class="text-lg font-semibold mb-2">Resume Parsing</h3>
+            <p class="text-sm text-gray-600">Parse and analyze candidate resumes</p>
+            <a href="{% url 'resume_parser' %}" class="mt-2 inline-block btn btn-sm btn-primary">Parse Resumes</a>
+        </div>
+    </div>
+    
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold">Quick Actions</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="{% url 'job_management' %}" class="bg-white border border-gray-200 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <h3 class="font-semibold mb-2">Post a New Job</h3>
+            <p class="text-sm text-gray-600">Create a new job listing to attract candidates</p>
+        </a>
+        <a href="{% url 'resume_parser' %}" class="bg-white border border-gray-200 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <h3 class="font-semibold mb-2">Parse Resumes</h3>
+            <p class="text-sm text-gray-600">Analyze candidate resumes with AI</p>
+        </a>
+        <a href="{% url 'profile' %}" class="bg-white border border-gray-200 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <h3 class="font-semibold mb-2">Update Company Profile</h3>
+            <p class="text-sm text-gray-600">Keep your company information up to date</p>
+        </a>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Your Job Listings</h2>
+            <a href="{% url 'job_management' %}" class="text-blue-600 hover:underline text-sm">Manage all</a>
+        </div>
+        {% if jobs %}
+            <div class="space-y-4">
+                {% for job in jobs %}
+                    <div class="border-b pb-4 last:border-b-0 last:pb-0">
+                        <h3 class="font-semibold text-lg">{{ job.designation }}</h3>
+                        <p class="text-gray-600">{{ job.company_name }}</p>
+                        <p class="text-sm text-gray-500 mb-2">Posted: {{ job.created_at|date:"M d, Y" }}</p>
+                        <div class="flex flex-wrap gap-2 mb-2">
+                            {% for skill in job.required_skills %}
+                                <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                        <a href="{% url 'job_edit' job.id %}" class="btn btn-sm btn-secondary mr-2">Edit</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-600">You haven't posted any jobs yet.</p>
+            <a href="{% url 'job_management' %}" class="mt-2 inline-block btn btn-primary">Post a Job</a>
+        {% endif %}
+    </div>
+
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Recent Applications</h2>
+        </div>
+        {% if recent_applications %}
+            <div class="space-y-4">
+                {% for application in recent_applications %}
+                    <div class="border-b pb-4 last:border-b-0 last:pb-0">
+                        <h3 class="font-semibold text-lg">{{ application.job.designation }}</h3>
+                        <p class="text-gray-600">Applicant: {{ application.candidate.name }}</p>
+                        <p class="text-sm text-gray-500 mb-2">Applied: {{ application.applied_at|date:"M d, Y" }}</p>
+                        <div class="flex space-x-2">
+                            <a href="{% url 'application_detail' application.id %}" class="btn btn-sm btn-primary">View Application</a>
+                            <a href="{% url 'resume_analysis' application.id %}" class="btn btn-sm bg-green-600 hover:bg-green-700 text-white">Analyze Resume</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-600">No applications received yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

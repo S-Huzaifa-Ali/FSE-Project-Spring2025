@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Resume Parser{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-navy text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="{% url 'home' %}" class="text-2xl font-bold text-orange">Resume Parser</a>
+            <div class="space-x-4">
+                {% if user.is_authenticated %}
+                    {% if user.user_type == 'candidate' %}
+                        <a href="{% url 'candidate_dashboard' %}" class="hover:text-orange">Dashboard</a>
+                        <a href="{% url 'job_list' %}" class="hover:text-orange">Jobs</a>
+                        <a href="{% url 'application_list' %}" class="hover:text-orange">My Applications</a>
+                    {% elif user.user_type == 'recruiter' %}
+                        <a href="{% url 'recruiter_dashboard' %}" class="hover:text-orange">Dashboard</a>
+                        <a href="{% url 'job_management' %}" class="hover:text-orange">Manage Jobs</a>
+                        <a href="{% url 'resume_parser' %}" class="hover:text-orange">Parse Resumes</a>
+                    {% endif %}
+                    <a href="{% url 'profile' %}" class="hover:text-orange">Profile</a>
+                    <a href="{% url 'logout' %}" class="hover:text-orange">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-orange">Login</a>
+                    <a href="{% url 'signup' %}" class="hover:text-orange">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4">
+        {% if messages %}
+            <div class="messages mb-4">
+                {% for message in messages %}
+                    <div class="p-4 {% if message.tags == 'error' %}bg-red-100 text-red-700{% elif message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-blue-100 text-blue-700{% endif %} rounded mb-2">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-navy text-white p-4 mt-8">
+        <div class="container mx-auto text-center">
+            <p>&copy; {% now "Y" %} Resume Parser. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

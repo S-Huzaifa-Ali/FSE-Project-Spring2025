@@ -1,0 +1,16 @@
+Django>=5.2,<6.0
+django-cors-headers>=4.3.1
+djangorestframework>=3.14.0
+python-dotenv>=1.0.0
+PyJWT>=2.8.0
+pypdf2>=3.0.0
+python-docx>=1.0.0
+spacy>=3.7.0
+openai>=1.0.0
+
+# SCSS compilation
+libsass>=0.22.0
+django-compressor>=4.4
+django-sass-processor>=1.2.2
+django-libsass>=0.9
+django-environ>=0.11.2

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Analyze Resume | Resume Parser{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'application_list' %}" class="text-blue-600 hover:underline flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Applications
+    </a>
+</div>
+
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <h1 class="text-2xl font-bold mb-4">Analyze Your Resume</h1>
+    <p class="text-gray-600 mb-6">Get AI-powered feedback on your resume for the job: <strong>{{ application.job.designation }}</strong> at <strong>{{ application.job.company_name }}</strong>.</p>
+    
+    <div class="bg-blue-50 p-4 rounded-lg mb-6">
+        <div class="flex items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 mr-2 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+            </svg>
+            <p class="text-sm text-blue-800">
+                Our AI will analyze your resume against the job requirements and provide personalized feedback to help improve your application. This analysis includes skills matching, experience relevance, and suggestions for improvement.
+            </p>
+        </div>
+    </div>
+    
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div class="flex justify-center">
+            <button type="submit" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clip-rule="evenodd" />
+                </svg>
+                Analyze My Resume
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="bg-white shadow-md rounded-lg p-6">
+    <h2 class="text-xl font-semibold mb-4">Job Details</h2>
+    
+    <div class="mb-4">
+        <h3 class="font-medium text-lg">{{ application.job.designation }}</h3>
+        <p class="text-gray-600">{{ application.job.company_name }}</p>
+    </div>
+    
+    {% if application.job.description %}
+        <div class="mb-4">
+            <h4 class="font-medium mb-2">Job Description:</h4>
+            <p class="text-gray-700 whitespace-pre-line">{{ application.job.description }}</p>
+        </div>
+    {% endif %}
+    
+    {% if application.job.required_skills %}
+        <div class="mb-4">
+            <h4 class="font-medium mb-2">Required Skills:</h4>
+            <div class="flex flex-wrap gap-2">
+                {% for skill in application.job.required_skills %}
+                    <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-sm">
+                        {{ skill }}
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    
+    {% if application.job.experience_requirements %}
+        <div class="mb-4">
+            <h4 class="font-medium mb-2">Experience Requirements:</h4>
+            <p class="text-gray-700">{{ application.job.experience_requirements }}</p>
+        </div>
+    {% endif %}
+    
+    {% if application.job.education_requirements %}
+        <div class="mb-4">
+            <h4 class="font-medium mb-2">Education Requirements:</h4>
+            <p class="text-gray-700">{{ application.job.education_requirements }}</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

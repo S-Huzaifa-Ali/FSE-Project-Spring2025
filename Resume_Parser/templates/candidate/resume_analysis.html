@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}Resume Analysis | Resume Parser{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'application_list' %}" class="text-blue-600 hover:underline flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Applications
+    </a>
+</div>
+
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <h1 class="text-2xl font-bold mb-4">Resume Analysis for {{ application.job.designation }}</h1>
+    <p class="text-gray-600 mb-6">AI-powered analysis of your resume for this job application.</p>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+            <h2 class="text-xl font-semibold mb-4">Job Information</h2>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-semibold text-lg">{{ application.job.designation }}</h3>
+                <p class="text-gray-600 mb-2">{{ application.job.company_name }}</p>
+                <p class="text-sm text-gray-500 mb-4">Applied: {{ application.applied_at|date:"M d, Y" }}</p>
+                
+                {% if application.job.required_skills %}
+                    <h4 class="font-medium mb-2">Required Skills:</h4>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% for skill in application.job.required_skills %}
+                            <span class="bg-gray-200 text-gray-800 px-2 py-1 rounded-full text-sm">
+                                {{ skill }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div>
+            <h2 class="text-xl font-semibold mb-4">Overall Score</h2>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="relative w-32 h-32">
+                        <svg class="w-full h-full" viewBox="0 0 36 36">
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                fill="none"
+                                stroke="#eee"
+                                stroke-width="3"
+                                stroke-dasharray="100, 100"/>
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                fill="none"
+                                stroke="#4F46E5"
+                                stroke-width="3"
+                                stroke-dasharray="{{ analysis.overall_score }}, 100"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-3xl font-bold">{{ analysis.overall_score }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-2">
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm font-medium">Skills Match</span>
+                            <span class="text-sm font-medium">{{ analysis.skills_score }}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: {{ analysis.skills_score }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm font-medium">Experience Match</span>
+                            <span class="text-sm font-medium">{{ analysis.experience_score }}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-600 h-2 rounded-full" style="width: {{ analysis.experience_score }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm font-medium">Education Match</span>
+                            <span class="text-sm font-medium">{{ analysis.education_score }}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-purple-600 h-2 rounded-full" style="width: {{ analysis.education_score }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-green-50 p-4 rounded-lg">
+            <h3 class="font-semibold text-lg text-green-800 mb-2">Strengths</h3>
+            <div class="text-gray-700 whitespace-pre-line">{{ analysis.strengths }}</div>
+        </div>
+        
+        <div class="bg-red-50 p-4 rounded-lg">
+            <h3 class="font-semibold text-lg text-red-800 mb-2">Areas to Improve</h3>
+            <div class="text-gray-700 whitespace-pre-line">{{ analysis.weaknesses }}</div>
+        </div>
+        
+        <div class="bg-blue-50 p-4 rounded-lg">
+            <h3 class="font-semibold text-lg text-blue-800 mb-2">Suggestions</h3>
+            <div class="text-gray-700 whitespace-pre-line">{{ analysis.improvement_suggestions }}</div>
+        </div>
+    </div>
+</div>
+
+{% if analysis.skills %}
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <h2 class="text-xl font-semibold mb-4">Skills Analysis</h2>
+    
+    <div class="mb-6">
+        <h3 class="font-medium text-lg mb-2">Your Skills</h3>
+        <div class="flex flex-wrap gap-2">
+            {% for skill in analysis.skills %}
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                    {{ skill }}
+                </span>
+            {% endfor %}
+        </div>
+    </div>
+    
+    {% if analysis.keyword_matches %}
+    <div>
+        <h3 class="font-medium text-lg mb-2">Matching Skills</h3>
+        <p class="text-sm text-gray-600 mb-2">{{ analysis.keyword_match_percentage|floatformat:0 }}% of required skills found in your resume</p>
+        <div class="flex flex-wrap gap-2">
+            {% for skill in analysis.keyword_matches %}
+                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                    {{ skill }}
+                </span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if analysis.experience %}
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <h2 class="text-xl font-semibold mb-4">Experience Analysis</h2>
+    <div class="text-gray-700 whitespace-pre-line">{{ analysis.experience }}</div>
+</div>
+{% endif %}
+
+{% if analysis.education %}
+<div class="bg-white shadow-md rounded-lg p-6">
+    <h2 class="text-xl font-semibold mb-4">Education Analysis</h2>
+    <div class="text-gray-700 whitespace-pre-line">{{ analysis.education }}</div>
+</div>
+{% endif %}
+{% endblock %}
