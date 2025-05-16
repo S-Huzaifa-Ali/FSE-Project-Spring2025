@@ -61,7 +61,7 @@ Implements **resume parsing and analysis**.
 
 ---
 
-## 🔑 Key Features
+## Key Features
 
 - ✅ Role-based authentication and navigation
 - ✅ Resume upload with **file validation** (`.pdf` and `.docx` only)
