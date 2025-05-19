@@ -63,13 +63,13 @@ Implements **resume parsing and analysis**.
 
 ## Key Features
 
-- ✅ Role-based authentication and navigation
-- ✅ Resume upload with **file validation** (`.pdf` and `.docx` only)
-- ✅ NLP-based resume parsing with **spaCy**
-- ✅ Recruiter filtering of resumes based on required skills
-- ✅ Recruiter-only access to detailed skill data
-- ✅ Profile pages for both recruiters and candidates
-- ✅ Minimalist, responsive frontend using **Tailwind CSS**
-- ✅ REST API backend using Django REST Framework
+- Role-based authentication and navigation
+- Resume upload with **file validation** (`.pdf` and `.docx` only)
+- NLP-based resume parsing with **spaCy**
+- Recruiter filtering of resumes based on required skills
+- Recruiter-only access to detailed skill data
+- Profile pages for both recruiters and candidates
+- Minimalist, responsive frontend using **Tailwind CSS**
+- REST API backend using Django REST Framework
 
 ---
